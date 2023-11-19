@@ -4,24 +4,31 @@
 Author Mark Russell and other peoples stuff from the internet
 Apologies if not citations not properly done :)
 
+![image desc](images/hotStuff.jpeg)
+
 # Table of Contents
+
 - [The Euro-rack dump](#the-euro-rack-dump)
 - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
     - [Other peoples version so of this to observe](#other-peoples-version-so-of-this-to-observe)
   - [Potentiometers](#potentiometers)
   - [Opamps](#opamps)
-    - [Opamp uses...](#opamp-uses)
+    - [Opamp uses](#opamp-uses)
     - [Common Opamp components](#common-opamp-components)
     - [Input protection: CV and Gate](#input-protection-cv-and-gate)
       - [How to scale CV if I want to scale the +/-10v range down to fit in 0-5v](#how-to-scale-cv-if-i-want-to-scale-the--10v-range-down-to-fit-in-0-5v)
       - [Gate protection - Clip everything above 5V and below 0V, and preserve that 0-5V range unchanged](#gate-protection---clip-everything-above-5v-and-below-0v-and-preserve-that-0-5v-range-unchanged)
+      - [Scaling to 3V3](#scaling-to-3v3)
       - [If you just need high/low gate/trigger input](#if-you-just-need-highlow-gatetrigger-input)
       - [Scale line level to modular level, 1Vac to 10Vac(and back again)](#scale-line-level-to-modular-level-1vac-to-10vacand-back-again)
       - [CV Attenuverters](#cv-attenuverters)
-    - [Level shifting](#level-shifting)
-    - [Euro power supply pins](#euro-power-supply-pins)
+  - [Daisy seed](#daisy-seed)
+  - [Level shifting](#level-shifting)
+  - [Euro power supply pins](#euro-power-supply-pins)
     - [Eurorack Panel dimensions](#eurorack-panel-dimensions)
+  - [Jack sockets](#jack-sockets)
+    - [Thonkiconn pins](#thonkiconn-pins)
   - [Open sound control](#open-sound-control)
     - [App's](#apps)
       - [Pure data patch](#pure-data-patch)
@@ -31,9 +38,6 @@ Apologies if not citations not properly done :)
         - [VCVrack Trowsoft cvOSCcv settings](#vcvrack-trowsoft-cvosccv-settings)
         - [OSC'elot settings](#oscelot-settings)
       - ["Open Stage control"](#open-stage-control)
-
-
-![image desc](images/hotStuff.jpeg)
 
 ## Introduction
 
@@ -56,7 +60,7 @@ Other problems.
 
 So many...
 
-### Opamp uses...
+### Opamp uses
 
 So many...
 
@@ -65,13 +69,13 @@ So many...
 | name    | single supply | rail to rail       | good for    | cost |
 | :-----: | :-----------: | :----------------: | :---------: | :--: |
 | TL07x   | No            | No (Vpeak-1.5V) | most things | ?    |
-| MCP600x | Yes           | Yes                | yeah stuff  | ?    |
+| MCP600x | Yes           | Yes                | input protection  | ?    |
 
 ### Input protection: CV and Gate
 
-Check Mutable Instruments docs for good practises.
+Check Mutable Instruments docs for good practices.
 
-Input protection circuit for CV and gate. Protect your ADC's and digital pins. 
+Input protection circuit for CV and gate. Protect your ADC's and digital pins.
 Perhaps your micro-controller has 3V3 logic, and any voltage above that will fry your electronics
 
 #### How to scale CV if I want to scale the +/-10v range down to fit in 0-5v
@@ -85,20 +89,22 @@ TODO: Verify How to scale +/-10V to 0-5V (ignore the "DC" comment at input) And 
 
 ![image desc](images/opamp_scale_10V10V_0V5V.png)
 
-
 #### Gate protection - Clip everything above 5V and below 0V, and preserve that 0-5V range unchanged
 
-If I want to just clip everything above 5 and below 0 and preserve that 0-5 range unchanged, I just use an MCP6002 in a non-inverting buffer arrangement. MCP600x series work on a smaller voltage range (you can't bridge +/-12v with them) but if you can power them with 0v and 5v, they provide rail-to-rail output, which just means that they can output voltages right up to 5v (unlike a TL07x which would stop working when the input gets close to it's power supply). If you want to add a potentiometer value to the input, you can do that with the help of a voltage reference. (Or, just send the pot to a different pin and add them digitally). That looks like this: 
+If I want to just clip everything above 5 and below 0 and preserve that 0-5 range unchanged, I just use an MCP6002 in a non-inverting buffer arrangement. MCP600x series work on a smaller voltage range (you can't bridge +/-12v with them) but if you can power them with 0v and 5v, they provide rail-to-rail output, which just means that they can output voltages right up to 5v (unlike a TL07x which would stop working when the input gets close to it's power supply). If you want to add a potentiometer value to the input, you can do that with the help of a voltage reference. (Or, just send the pot to a different pin and add them digitally). That looks like this:
 ![image desc](images/opamp_clip_aboveX.png)
 
-Also Doepfer doc have this 
+Also Doepfer doc have this
 
-![image doefer](images/voltageClamp_Doepfer.png)
+![image Doepfer](images/voltageClamp_Doepfer.png)
 
+#### Scaling to 3V3
+
+![image desc](images/scaling_20vp2p_to3V3.png)
 
 #### If you just need high/low gate/trigger input
 
-You can use a transistor instead of an op-amp. That could look like this (taken from different open source modules): https://tinyurl.com/yhqgrjg3
+You can use a transistor instead of an op-amp. That could look like this (taken from different open source modules): <https://tinyurl.com/yhqgrjg3>
 
 ![image desc](images/opampSaturate_0V5V.png)
 
@@ -121,17 +127,24 @@ passes through
 
 ![image desc](images/attenuverter_SnXBones.png)
 
-### Level shifting
+## Daisy seed
+
+Seed is like a normal embedded board \
+"Daisy patch submodule" has some treatment on board so you can hook up the cv straight away, as it uses tl704 to scale with a knob as well.
+
+See schematic for how the Daisy patch handles the gate and CV inputs
+
+## Level shifting
 
 TODO example circuits different ways +  some comments ...
 
 12V to 5V \
-5V  to 3V3 
+5V  to 3V3
 
 3V3 to 5V \
-5V  to 12V 
+5V  to 12V
 
-### Euro power supply pins
+## Euro power supply pins
 
 ![image](images/power_euroRack_pinOut.png)
 
@@ -143,21 +156,39 @@ TODO example circuits different ways +  some comments ...
 
 ### Eurorack Panel dimensions
 
+ToDo pictures from my case etc
+
 **Height**: is measured in _U_, where \
 U  = X cm = X inches             \
-3U = 128.5mm/5.06" overall 
+3U = 128.5mm/5.06" overall
 
 **Width:** is measured in _hp_, where \
 1HP = 5.08mm/0.2"         \
 84hp = X cm = X inches
 
-**Depth:** is not specified but 
+**Depth:** is not specified but
 
-Shallow modules: (2.5 cm to 4 cm [1]) can fit into "skiff" cases and are casually referred to as "skiff friendly".
+Shallow modules: (2.5 cm to 4 cm) can fit into "skiff" cases and are casually referred to as "skiff friendly".
 
 Extra deep: i.e. room to fit deep modules (2.00" (51mm) of available module depth).
 
 **Screw size:** Standard M3 holes
+
+## Jack sockets
+
+See North Coast modular for an in-depth article \
+TODo insert link, download .pdf
+
+### Thonkiconn pins
+
+See schematic for pins
+
+From Befaco "out" module, will be a mono signal if only the left input is used, see data sheet for pin out of thonkiconn.
+
+![image desc](images/jackSockets_normalling_01.png)
+![image desc](images/jackSocket_thonkiconnMono.png)
+
+Stereo is similar in that there are 2 connectors, and they go in the order of .. gnd/sleeve, ring, (next to sleeve), tip -furthest from ground
 
 ## Open sound control
 
@@ -182,11 +213,13 @@ This worked well with VCV Racks module: "TrowSoft cvOSCcv".
 
 ##### TouchOSC settings
 
-Schema to match that of _OSC'elot_ ... though hmmm this then means that cvOSCcv *has* to use a split for the polyphonic signal hmmm pff - good to know!
+Schema to match that of _OSC'elot_ ... though hmmm this then means that cvOSCcv _has_ to use a split for the polyphonic signal hmmm pff - good to know!
 
-![image desc](images/Screenshot%20from%202023-11-11%2014-41-04.png)
+![image desc](images/OSControl_touchOSC_01.png)
 
-![image desc](images/Screenshot%20from%202023-11-11%2014-41-28.png)
+![image desc](images/OSControl_touchOSC_02.png)
+
+![image desc](images/OSControl_touchOSC_03.png)
 
 ##### ipad settings
   
